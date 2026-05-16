@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOXONION</title>
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=JetBrains+Mono:wght@300;400;500;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:       #0c0c0c;
+  --bg2:      #111111;
+  --bg3:      #161616;
+  --bg4:      #1c1c1c;
+  --border:   #222222;
+  --border2:  #2e2e2e;
+  --red:      #c0392b;
+  --red-soft: #e74c3c;
+  --red-dim:  #7b1a13;
+  --text:     #d8d8d8;
+  --text2:    #888888;
+  --text3:    #505050;
+  --gold:     #c9a227;
+  --blue:     #3a7bd5;
+  --mono:     'JetBrains Mono', monospace;
+  --title:    'Oswald', sans-serif;
+  --horror:   'Creepster', cursive;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--red-dim); }
+
+/* NAV */
+#nav {
+  position: sticky; top: 0; z-index: 200;
+  background: #000;
+  border-bottom: 1px solid var(--red-dim);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 52px; gap: 12px;
+  box-shadow: 0 1px 20px rgba(192,57,43,.15);
+}
+.nav-logo {
+  font-family: var(--horror); font-size: 1.5rem;
+  color: var(--red-soft); letter-spacing: 4px;
+  cursor: pointer; user-select: none; white-space: nowrap; flex-shrink: 0;
+}
+#nav-right { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+.nb {
+  background: var(--bg3);
+  border: none; cursor: pointer;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text2); letter-spacing: 1px;
+  padding: 5px 14px;
+  transition: color .15s, background .15s;
+  text-decoration: none; display: inline-block; white-space: nowrap;
+  position: relative;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  border-left: 1px solid var(--border2);
+  border-right: 1px solid var(--border2);
+}
+.nb::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(192,57,43,.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.nb:hover { color: var(--red-soft); background: #1a0a09; }
+.nb.on { color: var(--red-soft); background: #180808; border-left-color: var(--red); border-right-color: var(--red); }
+.nb.gold { color: var(--gold); }
+.nb.gold:hover { color: #f0c040; background: rgba(201,162,39,.08); }
+
+.online-pill {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--red-dim);
+  border: 1px solid var(--red-dim);
+  padding: 3px 10px; margin-left: 6px; white-space: nowrap;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  background: rgba(192,57,43,.07); letter-spacing: 1px;
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.page { display: none; }
+.page.active { display: block; }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+.narrow { max-width: 700px; margin: 0 auto; padding: 0 24px; }
+
+/* HERO */
+#hero {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center;
+  padding: 52px 24px 44px;
+  border-bottom: 1px solid var(--red-dim);
+  background: #000; position: relative; overflow: hidden;
+}
+#hero::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+}
+.ascii {
+  font-family: var(--mono); font-size: 14px; line-height: 1.18;
+  color: var(--red); opacity: .85; white-space: pre; margin-bottom: 24px;
+  user-select: none; letter-spacing: 0;
+}
+.hero-title { font-family: var(--horror); font-size: 3.6rem; color: var(--red-soft); letter-spacing: 8px; margin-bottom: 6px; }
+.hero-sub { font-size: 11px; color: var(--text3); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 26px; }
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+/* BUTTONS */
+.btn {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 1px;
+  padding: 9px 22px; cursor: pointer; border: 1px solid; border-radius: 2px;
+  transition: all .18s; text-transform: uppercase; text-decoration: none; display: inline-block;
+}
+.btn-p { background: var(--red); color: #fff; border-color: var(--red); }
+.btn-p:hover { background: var(--red-soft); border-color: var(--red-soft); }
+.btn-g { background: transparent; color: var(--text2); border-color: var(--border2); }
+.btn-g:hover { color: var(--text); border-color: var(--text3); background: var(--bg3); }
+.btn-d { background: transparent; color: var(--red-soft); border-color: var(--red-dim); }
+.btn-d:hover { background: var(--red-dim); color: #fff; }
+.btn-sm { padding: 5px 12px; font-size: 11px; }
+
+/* SEARCH */
+.search-wrap { max-width: 580px; margin: 28px auto 0; padding: 0 24px; }
+.search-row { display: flex; border: 1px solid var(--border2); background: var(--bg2); border-radius: 2px; overflow: hidden; }
+.search-row input { flex: 1; padding: 10px 14px; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--mono); font-size: 13px; }
+.search-row input::placeholder { color: var(--text3); }
+.search-row button { background: var(--bg3); border: none; border-left: 1px solid var(--border2); color: var(--text2); font-family: var(--mono); font-size: 11px; letter-spacing: 1px; padding: 0 16px; cursor: pointer; text-transform: uppercase; transition: color .15s; }
+.search-row button:hover { color: var(--red-soft); }
+.search-results { max-width: 580px; margin: 6px auto 0; padding: 0 24px; }
+.sr-item { padding: 10px 14px; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 5px; cursor: pointer; background: var(--bg2); transition: border-color .15s; }
+.sr-item:hover { border-color: var(--red-dim); }
+.sr-item h4 { color: var(--red-soft); font-size: 13px; font-weight: 500; }
+.sr-item p  { color: var(--text3); font-size: 11px; margin-top: 2px; }
+
+.slabel {
+  padding: 24px 24px 14px; max-width: 1100px; margin: 0 auto;
+  font-family: var(--title); font-size: 12px; font-weight: 600;
+  color: var(--text3); letter-spacing: 3px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 12px;
+}
+.slabel::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ARTICLE GRID */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 0 24px 32px; }
+.acard { background: var(--bg2); padding: 20px; cursor: pointer; transition: background .15s; display: flex; flex-direction: column; gap: 8px; }
+.acard:hover { background: var(--bg3); }
+.acard-title { font-family: var(--title); font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.acard-meta  { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.acard-prev  { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.acard-img   { width: 100%; height: 110px; object-fit: cover; border: 1px solid var(--border); margin-top: 4px; }
+.empty { text-align: center; padding: 48px 24px; color: var(--text3); font-size: 13px; grid-column: 1/-1; background: var(--bg2); }
+
+/* BADGES */
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 2px; letter-spacing: .5px; text-transform: uppercase; }
+.bm { background: rgba(70,70,70,.25); color: #777; border: 1px solid #2e2e2e; }
+.bc { background: rgba(192,57,43,.15); color: #e88; border: 1px solid var(--red-dim); }
+.bmod { background: rgba(58,123,213,.15); color: #7ab; border: 1px solid #1d4b6a; }
+.ba { background: rgba(201,162,39,.15); color: var(--gold); border: 1px solid #6e5010; }
+
+/* PAGE HEADER */
+.phead { padding: 28px 24px 18px; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+.phead h1 { font-family: var(--title); font-size: 1rem; font-weight: 600; color: var(--text2); letter-spacing: 3px; text-transform: uppercase; }
+.phead h1 em { color: var(--red); font-style: normal; margin-right: 8px; }
+
+/* FORMS */
+.fpage { padding: 32px 0; }
+.fbox { background: var(--bg2); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.fbox-head { padding: 15px 20px; border-bottom: 1px solid var(--border); font-family: var(--title); font-size: 13px; font-weight: 600; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; }
+.fbody { padding: 24px 20px; display: flex; flex-direction: column; gap: 16px; }
+.field label { display: block; font-size: 11px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.field input, .field textarea, .field select { width: 100%; padding: 9px 12px; background: var(--bg3); border: 1px solid var(--border2); color: var(--text); font-family: var(--mono); font-size: 13px; border-radius: 2px; outline: none; transition: border-color .15s; }
+.field input:focus, .field textarea:focus { border-color: var(--red-dim); }
+.field textarea { resize: vertical; min-height: 200px; line-height: 1.6; }
+.field input[type=file] { padding: 6px; color: var(--text2); }
+.field select { cursor: pointer; appearance: none; }
+.img-prev-el { max-width: 100%; max-height: 180px; border: 1px solid var(--border2); border-radius: 2px; margin-top: 8px; }
+.alert { padding: 10px 14px; border-radius: 2px; font-size: 12px; border-left: 3px solid; }
+.aerr { background: rgba(192,57,43,.1); border-color: var(--red); color: #faa; }
+.aok  { background: rgba(46,204,113,.07); border-color: #2ecc71; color: #7de8a8; }
+
+/* AUTH */
+.atabs { display: flex; border-bottom: 1px solid var(--border); }
+.atab { flex: 1; padding: 12px; text-align: center; font-family: var(--mono); font-size: 12px; letter-spacing: 1px; cursor: pointer; background: none; border: none; color: var(--text3); text-transform: uppercase; transition: color .15s; }
+.atab.on { color: var(--red-soft); border-bottom: 2px solid var(--red); }
+
+/* ARTICLE VIEW */
+.av { padding: 32px 0; }
+.av-title { font-family: var(--title); font-size: 1.75rem; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 10px; }
+.av-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; color: var(--text3); margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.alink { color: var(--red-soft); cursor: pointer; }
+.alink:hover { text-decoration: underline; }
+.av-body { font-size: 14px; color: var(--text2); line-height: 1.9; white-space: pre-wrap; word-break: break-word; }
+.av-img { max-width: 100%; border: 1px solid var(--border); border-radius: 2px; margin: 18px 0; display: block; }
+
+/* USERS */
+.ulist { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 0 24px 32px; }
+.ucard { background: var(--bg2); padding: 18px 20px; cursor: pointer; transition: background .15s; }
+.ucard:hover { background: var(--bg3); }
+.uavatar { width: 44px; height: 44px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: var(--horror); font-size: 1.2rem; color: var(--red); margin-bottom: 10px; overflow: hidden; flex-shrink: 0; }
+.uavatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.ucard h4 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+.umeta { font-size: 11px; color: var(--text3); line-height: 1.8; margin-top: 5px; }
+
+/* PROFILE */
+.pbanner-wrap { width: 100%; height: 120px; overflow: hidden; background: linear-gradient(135deg, #0a0000 0%, #1a0505 60%, #0c0c0c 100%); border-bottom: 1px solid var(--border); }
+.pbanner-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pcard { background: var(--bg2); border: 1px solid var(--border); border-radius: 2px; padding: 22px; display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 24px; }
+.pavatar { width: 80px; height: 80px; border-radius: 50%; background: var(--bg4); border: 2px solid var(--red-dim); display: flex; align-items: center; justify-content: center; font-family: var(--horror); font-size: 2rem; color: var(--red); flex-shrink: 0; overflow: hidden; position: relative; }
+.pavatar.editable { cursor: pointer; }
+.pavatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.pavatar-edit { position: absolute; inset: 0; background: rgba(0,0,0,.65); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; font-size: 10px; color: #fff; letter-spacing: .5px; font-family: var(--mono); text-align: center; }
+.pavatar.editable:hover .pavatar-edit { opacity: 1; }
+.pinfo { flex: 1; min-width: 200px; }
+.pinfo h2 { font-family: var(--title); font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.pbio { font-size: 12px; color: var(--text2); margin-top: 8px; line-height: 1.6; font-style: italic; }
+.ploc { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.pstats { display: flex; gap: 22px; margin-top: 12px; flex-wrap: wrap; }
+.stat .val { font-size: 1rem; color: var(--red-soft); font-weight: 700; }
+.stat .lbl { font-size: 10px; color: var(--text3); }
+.edit-profile-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; padding: 4px 10px; cursor: pointer; border: 1px solid var(--border2); background: none; color: var(--text3); text-transform: uppercase; transition: all .15s; border-radius: 2px; margin-top: 10px; display: inline-block; }
+.edit-profile-btn:hover { color: var(--text); border-color: var(--text3); }
+
+/* MOD */
+.msect { background: var(--bg2); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 18px; overflow: hidden; }
+.mhead { padding: 13px 18px; border-bottom: 1px solid var(--border); font-family: var(--title); font-size: 12px; font-weight: 600; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+.mtable { width: 100%; border-collapse: collapse; }
+.mtable th { text-align: left; padding: 9px 14px; font-size: 10px; color: var(--text3); font-weight: 400; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
+.mtable td { padding: 9px 14px; font-size: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.mtable tr:last-child td { border-bottom: none; }
+.mtable tr:hover td { background: var(--bg3); }
+.tda { display: flex; gap: 5px; align-items: center; }
+.mb { font-family: var(--mono); font-size: 10px; letter-spacing: .5px; padding: 4px 9px; border-radius: 2px; cursor: pointer; border: 1px solid; transition: all .15s; text-transform: uppercase; white-space: nowrap; }
+.mb-g { color: var(--text3); border-color: var(--border2); background: none; }
+.mb-g:hover { color: var(--text); border-color: var(--text3); }
+.mb-r { color: var(--red-soft); border-color: var(--red-dim); background: none; }
+.mb-r:hover { background: var(--red-dim); color: #fff; }
+.mb-grn { color: #5cdb5c; border-color: #2a4a2a; background: none; }
+.mb-grn:hover { background: #1a3a1a; }
+.mb-gld { color: var(--gold); border-color: #5a4010; background: none; }
+.mb-gld:hover { background: rgba(201,162,39,.1); }
+
+/* MODALS */
+.mbg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.82); z-index: 500; align-items: center; justify-content: center; }
+.mbg.open { display: flex; }
+.modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 2px; padding: 24px; min-width: 300px; max-width: 480px; width: 90%; position: relative; max-height: 90vh; overflow-y: auto; }
+.modal h3 { font-family: var(--title); font-size: .95rem; font-weight: 600; color: var(--text); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+.mx { position: absolute; top: 12px; right: 14px; background: none; border: none; color: var(--text3); font-size: 16px; cursor: pointer; line-height: 1; }
+.mx:hover { color: var(--text); }
+
+/* Avatar upload */
+.av-upload-zone { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px; border: 1px dashed var(--border2); border-radius: 2px; cursor: pointer; transition: border-color .15s; margin-bottom: 16px; }
+.av-upload-zone:hover { border-color: var(--red-dim); }
+.av-prev-lg { width: 90px; height: 90px; border-radius: 50%; background: var(--bg4); border: 2px solid var(--red-dim); display: flex; align-items: center; justify-content: center; font-family: var(--horror); font-size: 2.2rem; color: var(--red); overflow: hidden; }
+.av-prev-lg img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.banner-prev-wrap { margin-top: 8px; width: 100%; height: 60px; overflow: hidden; border: 1px solid var(--border2); border-radius: 2px; display: none; }
+.banner-prev-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+.back-btn { background: none; border: none; cursor: pointer; font-family: var(--mono); font-size: 12px; color: var(--text3); padding: 0; display: inline-flex; align-items: center; gap: 5px; transition: color .15s; margin-bottom: 20px; }
+.back-btn:hover { color: var(--text); }
+.dim { color: var(--text3); }
+.red { color: var(--red-soft); }
+.sm { font-size: 11px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo" onclick="goTo('home')">☩ DOXONION</div>
+  <div id="nav-right"></div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div id="hero">
+    <pre class="ascii">
+                                                                                                        
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                ..-***-.                       .....                                
+                               .=@@@=#@@=                    .*@@@@@*.                              
+                              .#@@@:   .-                   .*%=.+@@@@=.                            
+                             .*@@@+.                        ...  .=@@@@=.                           
+                            .-@@@@-.                              .#@@@@-.                          
+                            .*@@@%-                               .=@@@@%.                          
+                            .%@@@%-                                :@@@@@-                          
+                            -@@@@%-                                .@@@@@+.                         
+                            +@@@@@-                                .@@@@@*.                         
+                           .#@@@@@=.                               :@@@@@*.                         
+                           .@@@@@@*.           .:-==--:.           =@@@@@#.                         
+                           .@@@@@@%.       .-*%@%*+==+#@%#+..     .#@@@@@*.                         
+                           .@@@@@@@-    .+@@*:.         ..=@@#:.  -@@@@@@*.                         
+                           .@@@@@@@%..=@@*:.                .=%@=.*@@@@@@*                          
+                           .@@@@@@@@#@%=..                    .-#@@@@@@@@+                          
+                           .%@@@@@@@@-..                        .+@@@@@@@=                          
+                            #@@@@@@@@*.                         -@@@@@@@@-.                         
+                            +@@@@@@@@@=.                       .@@@@@@@@@:                          
+                            :@@@@@@@@@%:                      .#@@@@@@@@%.                          
+                            .#@@@@@@@@@#.                    .+@@@@@@@@@@-                          
+                            .%@@@@@@@@@@+.                  .-%@@@@@@@@@@#.                         
+                            +@@@@@@@@@@@@=.                 .#@@@@@@@@@@+*-.                        
+                           .#+#@@@@@@@@@@%-.               .*@@@@@@@@@@@.=*.                        
+                            %--@@@@@@@@@@@@:..-*%@@@@@%*=..*@@@@@@@@@@@+.=%.                        
+                            %=.#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#..*%.                        
+                            ##.:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=.:%%.                        
+                            =@=.+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=.#@*.                        
+                            .@@:%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%@@-                         
+                       .... .*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#.  ...                    
+                       .###%**@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+-*##@=.                   
+                        .#%-.+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%:*@=.                    
+                         :%@%:=@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-.%@*.                     
+                         .+@@@%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*:%@@:.                     
+                          .#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%@@@+.                      
+                           .#@@@@@@@#.    :%@@@@@@@@@@@@@@@@%:..  .#@@@@@@@+.                       
+                            .-%@@@@@@@+:....=@@@@@@@@@@@@@@=....:+@@@@@@@%-.                        
+                             ...#@@@@@@@@@%%##@@@@@@@@@@@@%#%%@@@@@@@@@*:.                          
+                                -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%.                            
+                                .*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=.                            
+                                .:%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*.                             
+                                 .:%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*..                             
+                                   .=@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-.                               
+                                    .:#@@@@@@@@@@@@@@@@@@@@@@@@@@*..                                
+                                      .:#@@@@@@@@@@@@@@@@@@@@@@*:.                                  
+                                        .:#@@@@@@@@@@@@@@@@@@+..                                    
+                                           .#@@@@@@@@@@@@@#.                                        
+                                            ..+%@@@@@@@%+..                                         
+                                                ..---:..                                            
+                                                                                                    
+                                                                                                    
+                                                                                                    
+ </pre>
+    <h1 class="hero-title"> DOXONION</h1>
+    <p class="hero-sub">doxonion &mdash; Publiez </p>
+    <div class="hero-actions">
+      <button class="btn btn-p" onclick="goToPublish()">Publier un article</button>
+      <button class="btn btn-g" onclick="goTo('articles')">Explorer les articles</button>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <div class="search-row">
+      <input type="text" id="q" placeholder="Rechercher un article..." oninput="doSearch()">
+      <button onclick="doSearch()">Chercher</button>
+    </div>
+  </div>
+  <div class="search-results" id="sr"></div>
+  <div class="slabel">Articles récents</div>
+  <div class="grid" id="home-grid"></div>
+</div>
+
+<!-- ALL ARTICLES -->
+<div id="page-articles" class="page">
+  <div class="phead"><h1><em>☩</em> Tous les articles</h1></div>
+  <div class="grid" id="all-grid"></div>
+</div>
+
+<!-- ARTICLE VIEW -->
+<div id="page-article-view" class="page">
+  <div class="narrow av">
+    <button class="back-btn" onclick="goBack()">← Retour</button>
+    <div id="av-content"></div>
+  </div>
+</div>
+
+<!-- PUBLISH -->
+<div id="page-publish" class="page">
+  <div class="narrow fpage">
+    <div class="fbox">
+      <div class="fbox-head">Publier un article</div>
+      <div class="fbody">
+        <div id="pub-alert"></div>
+        <div class="field">
+          <label>Titre *</label>
+          <input type="text" id="pub-title" placeholder="Titre unique" maxlength="200">
+        </div>
+        <div class="field">
+          <label>Contenu *</label>
+          <textarea id="pub-content" placeholder="Rédigez votre article ici..." maxlength="50000"></textarea>
+        </div>
+        <div class="field">
+          <label>Image (optionnel)</label>
+          <input type="file" id="pub-img" accept="image/*" onchange="prevImg(this)">
+          <img id="pub-prev" class="img-prev-el" style="display:none" alt="Aperçu">
+        </div>
+        <button class="btn btn-p" onclick="publishArticle()">Publier</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="page-auth" class="page">
+  <div class="narrow fpage">
+    <div class="fbox">
+      <div class="atabs">
+        <button class="atab on" id="tab-l" onclick="switchTab('l')">Connexion</button>
+        <button class="atab" id="tab-r" onclick="switchTab('r')">Inscription</button>
+      </div>
+      <div class="fbody">
+        <div id="auth-alert"></div>
+        <div id="lf" style="display:flex;flex-direction:column;gap:14px">
+          <div class="field"><label>Pseudo</label><input type="text" id="lu" placeholder="votre_pseudo" maxlength="30" autocomplete="username"></div>
+          <div class="field"><label>Mot de passe</label><input type="password" id="lp" placeholder="••••••••" maxlength="128" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+          <button class="btn btn-p" onclick="doLogin()">Se connecter</button>
+        </div>
+        <div id="rf" style="display:none;flex-direction:column;gap:14px">
+          <div class="field"><label>Pseudo *</label><input type="text" id="ru" placeholder="votre_pseudo" maxlength="30" autocomplete="username"></div>
+          <div class="field"><label>Email *</label><input type="email" id="re" placeholder="vous@example.com" maxlength="200" autocomplete="email"></div>
+          <div class="field"><label>Mot de passe * (min 6 car.)</label><input type="password" id="rp" placeholder="••••••••" maxlength="128" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"></div>
+          <button class="btn btn-p" onclick="doRegister()">Créer un compte</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- USERS -->
+<div id="page-users" class="page">
+  <div class="phead"><h1><em>☩</em> Membres</h1></div>
+  <div class="ulist" id="users-list"></div>
+</div>
+
+<!-- PROFILE -->
+<div id="page-profile" class="page">
+  <div id="profile-banner-area"></div>
+  <div class="narrow" style="padding:24px 24px 40px">
+    <button class="back-btn" onclick="goBack()">← Retour</button>
+    <div id="profile-content"></div>
+  </div>
+</div>
+
+<!-- MOD -->
+<div id="page-mod" class="page">
+  <div class="wrap" style="padding-top:28px;padding-bottom:32px">
+    <div style="margin-bottom:20px">
+      <span style="font-family:var(--title);font-size:1rem;font-weight:600;color:var(--text2);letter-spacing:3px;text-transform:uppercase">⚔ Modération</span>
+    </div>
+    <div class="msect">
+      <div class="mhead"><span>Articles</span><span id="mc-art" class="sm dim"></span></div>
+      <div style="overflow-x:auto">
+        <table class="mtable">
+          <thead><tr><th>Titre</th><th>Auteur</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="mb-art"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="msect">
+      <div class="mhead"><span>Membres</span><span id="mc-usr" class="sm dim"></span></div>
+      <div style="overflow-x:auto">
+        <table class="mtable">
+          <thead><tr><th>Pseudo</th><th>Rôle</th><th>Statut</th><th>Inscrit</th><th>Actions</th></tr></thead>
+          <tbody id="mb-usr"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL : ROLE -->
+<div class="mbg" id="role-modal">
+  <div class="modal">
+    <button class="mx" onclick="closeModal('role-modal')">✕</button>
+    <h3>Changer le rôle</h3>
+    <p class="sm dim" style="margin-bottom:14px">Utilisateur : <span id="modal-un" class="red"></span></p>
+    <div class="field" style="margin-bottom:16px">
+      <label>Nouveau rôle</label>
+      <select id="modal-role" style="background:var(--bg3);color:var(--text)">
+        <option value="membre">Membre</option>
+        <option value="contributeur">Contributeur</option>
+        <option value="modérateur">Modérateur</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <button class="btn btn-p btn-sm" onclick="applyRole()">Appliquer</button>
+  </div>
+</div>
+
+<!-- MODAL : EDIT PROFILE -->
+<div class="mbg" id="edit-modal">
+  <div class="modal">
+    <button class="mx" onclick="closeModal('edit-modal')">✕</button>
+    <h3>Modifier mon profil</h3>
+
+    <div class="field" style="margin-bottom:8px"><label>Photo de profil</label></div>
+    <div class="av-upload-zone" onclick="document.getElementById('av-file').click()" title="Changer la photo">
+      <div class="av-prev-lg" id="av-prev-lg"></div>
+      <span style="font-size:10px;color:var(--text3);letter-spacing:1px">CLIQUER POUR CHANGER</span>
+      <input type="file" id="av-file" accept="image/*" style="display:none" onchange="handleAvatarChange(this)">
+    </div>
+
+    <div class="field" style="margin-bottom:14px">
+      <label>Bannière de profil</label>
+      <input type="file" id="banner-file" accept="image/*" onchange="handleBannerChange(this)">
+      <div class="banner-prev-wrap" id="banner-prev-wrap"><img id="banner-prev-img" alt="Bannière"></div>
+    </div>
+
+    <div class="field" style="margin-bottom:14px">
+      <label>Bio (max 200 car.)</label>
+      <textarea id="edit-bio" style="min-height:70px" maxlength="200" placeholder="Décris-toi en quelques mots..."></textarea>
+    </div>
+
+    <div class="field" style="margin-bottom:18px">
+      <label>Localisation (optionnel)</label>
+      <input type="text" id="edit-loc" maxlength="60" placeholder="Paris, France">
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:16px">
+      <div class="field" style="margin-bottom:10px">
+        <label>Nouveau mot de passe (vide = inchangé)</label>
+        <input type="password" id="edit-pw" maxlength="128" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label>Confirmer le mot de passe</label>
+        <input type="password" id="edit-pw2" maxlength="128" placeholder="••••••••" autocomplete="new-password">
+      </div>
+    </div>
+
+    <div id="edit-alert" style="margin-bottom:12px"></div>
+    <button class="btn btn-p" style="width:100%" onclick="saveProfile()">Enregistrer</button>
+  </div>
+</div>
+
+<script>
+// ══ STORAGE ══
+const PFX = 'dxn2_';
+function load(k, d) { try { const v = localStorage.getItem(PFX+k); return v ? JSON.parse(v) : d; } catch { return d; } }
+function save(k, v) { try { localStorage.setItem(PFX+k, JSON.stringify(v)); } catch {} }
+
+// ══ STATE ══
+let users    = load('users', []);
+let articles = load('articles', []);
+let banned   = load('banned', []);
+let pviews   = load('pviews', {});
+let me       = null;
+let prevPage = 'home';
+let roleTarget = null;
+
+// ── Admin seed ──
+(function() {
+  let adm = users.find(u => u.username === 'admin');
+  if (!adm) {
+    adm = { username:'admin', password:'kezox90', email:'admin@doxonion.com', role:'admin', created:Date.now(), views:0, bio:'', loc:'', avatar:'', banner:'' };
+    users.push(adm);
+  } else {
+    adm.role = 'admin';
+    ['bio','loc','avatar','banner'].forEach(k => { if (!adm[k]) adm[k] = ''; });
+  }
+  save('users', users);
+})();
+
+// ══ VALIDATION ══
+function sanitize(s, max) { return String(s||'').trim().slice(0, max||500); }
+function validUsername(u) { return /^[a-zA-Z0-9_\-]{2,30}$/.test(u); }
+function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && e.length <= 200; }
+
+// ══ BRUTE-FORCE PROTECTION ══
+const _attempts = {};
+function rateOk(key) {
+  const now = Date.now();
+  _attempts[key] = (_attempts[key]||[]).filter(t => now-t < 60000);
+  if (_attempts[key].length >= 8) return false;
+  _attempts[key].push(now);
+  return true;
+}
+
+// ══ IMAGE RESIZE ══
+function resizeImage(file, maxW, maxH, cb) {
+  if (!file.type.startsWith('image/')) return;
+  if (file.size > 5*1024*1024) { alert('Image trop lourde (max 5 Mo).'); return; }
+  const img = new Image(), url = URL.createObjectURL(file);
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    let w=img.width, h=img.height;
+    if (w>maxW) { h=Math.round(h*maxW/w); w=maxW; }
+    if (h>maxH) { w=Math.round(w*maxH/h); h=maxH; }
+    const c=document.createElement('canvas'); c.width=w; c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h);
+    cb(c.toDataURL('image/jpeg',0.82));
+  };
+  img.onerror = () => URL.revokeObjectURL(url);
+  img.src = url;
+}
+
+// ══ ONLINE COUNT ══
+let onlineN = Math.floor(Math.random()*6)+2;
+setInterval(()=>{
+  onlineN = Math.max(1, onlineN + (Math.random()>.5?1:-1));
+  const el = document.getElementById('online-num');
+  if (el) el.textContent = onlineN;
+}, 6000);
+
+// ══ ROUTING ══
+function goTo(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-'+name);
+  if (!pg) return;
+  pg.classList.add('active');
+  window.scrollTo(0, 0);
+  if (name==='home')     renderHome();
+  if (name==='articles') renderAllArticles();
+  if (name==='users')    renderUsers();
+  if (name==='mod') {
+    if (!me || !['modérateur','admin'].includes(me.role)) { goTo('home'); return; }
+    renderMod();
+  }
+  buildNav(name);
+}
+
+function goBack() { goTo(prevPage); }
+
+function buildNav(cur) {
+  const isMod = me && ['modérateur','admin'].includes(me.role);
+  let h = '';
+  h += nb('home','Accueil',cur);
+  h += nb('articles','Articles',cur);
+  h += nb('users','Membres',cur);
+  if (me) {
+    h += `<button class="nb" onclick="goToPublish()">Publier</button>`;
+    h += `<button class="nb" onclick="myProfile()">Mon profil</button>`;
+    if (isMod) h += `<button class="nb gold${cur==='mod'?' on':''}" onclick="goTo('mod')">⚔ Mod</button>`;
+    h += `<button class="nb" onclick="doLogout()">Déconnexion</button>`;
+  } else {
+    h += `<button class="nb${cur==='auth'?' on':''}" onclick="goTo('auth')">Connexion</button>`;
+  }
+  h += `<div class="online-pill"><span class="dot"></span><span id="online-num">${onlineN}</span> en ligne</div>`;
+  document.getElementById('nav-right').innerHTML = h;
+}
+
+function nb(name, label, cur) {
+  return `<button class="nb${cur===name?' on':''}" onclick="goTo('${name}')">${label}</button>`;
+}
+
+// ══ AUTH ══
+function switchTab(t) {
+  document.getElementById('lf').style.display = t==='l' ? 'flex' : 'none';
+  document.getElementById('rf').style.display = t==='r' ? 'flex' : 'none';
+  document.getElementById('tab-l').className = 'atab'+(t==='l'?' on':'');
+  document.getElementById('tab-r').className = 'atab'+(t==='r'?' on':'');
+  clrAlert('auth-alert');
+}
+
+function doLogin() {
+  if (!rateOk('login')) { showAlert('auth-alert','Trop de tentatives, attendez 1 minute.','err'); return; }
+  const u = sanitize(document.getElementById('lu').value, 30).toLowerCase();
+  const p = document.getElementById('lp').value;
+  if (!u||!p) { showAlert('auth-alert','Remplis tous les champs.','err'); return; }
+  const user = users.find(x => x.username.toLowerCase()===u);
+  // Same error message whether user doesn't exist or password wrong (no user enumeration)
+  if (!user || user.password!==p) { showAlert('auth-alert','Pseudo ou mot de passe incorrect.','err'); return; }
+  if (banned.includes(user.username)) { showAlert('auth-alert','Votre compte est banni.','err'); return; }
+  me = user;
+  document.getElementById('lp').value = '';
+  goTo('home');
+}
+
+function doRegister() {
+  const u = sanitize(document.getElementById('ru').value, 30);
+  const e = sanitize(document.getElementById('re').value, 200).toLowerCase();
+  const p = document.getElementById('rp').value;
+  if (!u||!e||!p) { showAlert('auth-alert','Tous les champs sont requis.','err'); return; }
+  if (!validUsername(u)) { showAlert('auth-alert','Pseudo invalide (2-30 car., lettres/chiffres/_- uniquement).','err'); return; }
+  if (!validEmail(e))    { showAlert('auth-alert','Email invalide.','err'); return; }
+  if (p.length<6)  { showAlert('auth-alert','Mot de passe trop court (min 6 car.).','err'); return; }
+  if (p.length>128){ showAlert('auth-alert','Mot de passe trop long.','err'); return; }
+  if (users.find(x=>x.username.toLowerCase()===u.toLowerCase())) { showAlert('auth-alert','Ce pseudo est déjà pris.','err'); return; }
+  if (users.find(x=>x.email&&x.email.toLowerCase()===e)) { showAlert('auth-alert','Cet email est déjà utilisé.','err'); return; }
+  const nu = { username:u, email:e, password:p, role:'membre', created:Date.now(), views:0, bio:'', loc:'', avatar:'', banner:'' };
+  users.push(nu);
+  save('users', users);
+  me = nu;
+  goTo('home');
+}
+
+function doLogout() { me = null; goTo('home'); }
+
+// ══ ARTICLES ══
+function renderHome() {
+  const el = document.getElementById('home-grid');
+  const s  = [...articles].sort((a,b)=>b.created-a.created).slice(0,12);
+  el.innerHTML = s.length ? s.map(cardH).join('') : '<div class="empty">Aucun article pour le moment.</div>';
+}
+
+function renderAllArticles() {
+  const el = document.getElementById('all-grid');
+  const s  = [...articles].sort((a,b)=>b.created-a.created);
+  el.innerHTML = s.length ? s.map(cardH).join('') : '<div class="empty">Aucun article.</div>';
+}
+
+function cardH(a) {
+  const author = users.find(u=>u.username===a.author);
+  const role   = author ? author.role : 'membre';
+  const av     = author && author.avatar
+    ? `<img src="${esc(author.avatar)}" alt="" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:3px">`
+    : '';
+  const prev = esc(a.content.slice(0,130)) + (a.content.length>130?'…':'');
+  const img  = a.image ? `<img class="acard-img" src="${esc(a.image)}" alt="" loading="lazy">` : '';
+  const id   = JSON.stringify(a.id);
+  return `<div class="acard" onclick="openArticle(${id})">
+    <div class="acard-title">${esc(a.title)}</div>
+    <div class="acard-meta">${bdg(role)}${av}<span>${esc(a.author)}</span><span>·</span><span>${fmt(a.created)}</span></div>
+    <div class="acard-prev">${prev}</div>
+    ${img}
+  </div>`;
+}
+
+function openArticle(id, from) {
+  prevPage = from || 'home';
+  const a = articles.find(x=>x.id===id);
+  if (!a) return;
+  const author = users.find(u=>u.username===a.author);
+  const role   = author ? author.role : 'membre';
+  const img    = a.image ? `<img class="av-img" src="${esc(a.image)}" alt="">` : '';
+  document.getElementById('av-content').innerHTML = `
+    <h1 class="av-title">${esc(a.title)}</h1>
+    <div class="av-meta">
+      ${bdg(role)}
+      <span>Par <span class="alink" onclick="viewProfile(${JSON.stringify(a.author)})">${esc(a.author)}</span></span>
+      <span>·</span><span>${fmt(a.created)}</span>
+    </div>
+    ${img}
+    <div class="av-body">${esc(a.content)}</div>
+  `;
+  goTo('article-view');
+}
+
+function goToPublish() {
+  if (!me) { goTo('auth'); return; }
+  clrAlert('pub-alert');
+  document.getElementById('pub-title').value   = '';
+  document.getElementById('pub-content').value = '';
+  document.getElementById('pub-prev').style.display = 'none';
+  document.getElementById('pub-img').value = '';
+  goTo('publish');
+}
+
+function publishArticle() {
+  const title   = sanitize(document.getElementById('pub-title').value, 200);
+  const content = sanitize(document.getElementById('pub-content').value, 50000);
+  if (!title)         { showAlert('pub-alert','Le titre est requis.','err'); return; }
+  if (title.length<3) { showAlert('pub-alert','Le titre est trop court.','err'); return; }
+  if (!content)       { showAlert('pub-alert','Le contenu est requis.','err'); return; }
+  if (articles.find(a=>a.title.toLowerCase()===title.toLowerCase())) { showAlert('pub-alert','Ce titre est déjà utilisé.','err'); return; }
+  const pv  = document.getElementById('pub-prev');
+  const img = (pv.style.display!=='none' && pv.src && pv.src!==location.href) ? pv.src : null;
+  const art = { id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), title, content, image:img, author:me.username, created:Date.now() };
+  articles.unshift(art);
+  save('articles', articles);
+  showAlert('pub-alert','Article publié avec succès !','ok');
+  setTimeout(()=>goTo('home'), 900);
+}
+
+function prevImg(inp) {
+  const f = inp.files[0]; if (!f) return;
+  resizeImage(f, 1200, 800, data => {
+    const el = document.getElementById('pub-prev');
+    el.src = data; el.style.display = 'block';
+  });
+}
+
+// ══ SEARCH ══
+function doSearch() {
+  const q  = sanitize(document.getElementById('q').value, 200).toLowerCase();
+  const sr = document.getElementById('sr');
+  if (!q) { sr.innerHTML=''; return; }
+  const found = articles.filter(a=>a.title.toLowerCase().includes(q)||a.content.toLowerCase().includes(q));
+  if (!found.length) { sr.innerHTML='<div class="sr-item" style="cursor:default;color:var(--text3)">Aucun résultat.</div>'; return; }
+  sr.innerHTML = found.slice(0,10).map(a=>`<div class="sr-item" onclick="openArticle(${JSON.stringify(a.id)},'home')"><h4>${esc(a.title)}</h4><p>Par ${esc(a.author)} · ${fmt(a.created)}</p></div>`).join('');
+}
+
+// ══ USERS ══
+function renderUsers() {
+  const list = document.getElementById('users-list');
+  const vis  = users.filter(u=>!banned.includes(u.username));
+  list.innerHTML = vis.length
+    ? vis.map(u => {
+        const av = u.avatar
+          ? `<div class="uavatar"><img src="${esc(u.avatar)}" alt="${esc(u.username)}"></div>`
+          : `<div class="uavatar">${u.username[0].toUpperCase()}</div>`;
+        return `<div class="ucard" onclick="viewProfile(${JSON.stringify(u.username)})">${av}<h4>${esc(u.username)}</h4>${bdg(u.role)}<div class="umeta">Inscrit le ${fmt(u.created)}<br>${u.views||0} vue(s) de profil</div></div>`;
+      }).join('')
+    : '<div class="empty" style="grid-column:1/-1">Aucun membre.</div>';
+}
+
+// ══ PROFILE ══
+function myProfile() { viewProfile(me.username, true); }
+
+function viewProfile(username, isSelf) {
+  const u = users.find(x=>x.username===username);
+  if (!u) return;
+
+  if (!isSelf && !(me && me.username===username)) {
+    const fp = btoa(navigator.userAgent+(Intl.DateTimeFormat().resolvedOptions().timeZone||'')).slice(0,28);
+    if (!pviews[username]) pviews[username]=[];
+    if (!pviews[username].includes(fp)) {
+      pviews[username].push(fp);
+      save('pviews', pviews);
+      u.views=(u.views||0)+1;
+      save('users', users);
+    }
+  }
+
+  const isBanned = banned.includes(username);
+  const arts     = articles.filter(a=>a.author===username);
+  const canEdit  = me && me.username===username;
+
+  // Banner
+  const bannerEl = document.getElementById('profile-banner-area');
+  bannerEl.innerHTML = u.banner
+    ? `<div class="pbanner-wrap"><img src="${esc(u.banner)}" alt="bannière"></div>`
+    : `<div class="pbanner-wrap"></div>`;
+
+  const av = u.avatar
+    ? `<div class="pavatar${canEdit?' editable':''}" ${canEdit?'onclick="openEditModal()" title="Modifier"':''}>
+         <img src="${esc(u.avatar)}" alt="${esc(u.username)}">
+         ${canEdit?'<div class="pavatar-edit">MODIFIER</div>':''}
+       </div>`
+    : `<div class="pavatar${canEdit?' editable':''}" ${canEdit?'onclick="openEditModal()" title="Modifier"':''}>
+         ${u.username[0].toUpperCase()}
+         ${canEdit?'<div class="pavatar-edit">MODIFIER</div>':''}
+       </div>`;
+
+  const bioHtml  = u.bio ? `<p class="pbio">${esc(u.bio)}</p>` : '';
+  const locHtml  = u.loc ? `<p class="ploc">📍 ${esc(u.loc)}</p>` : '';
+  const editBtn  = canEdit ? `<button class="edit-profile-btn" onclick="openEditModal()">✎ Modifier mon profil</button>` : '';
+
+  document.getElementById('profile-content').innerHTML = `
+    <div class="pcard">
+      ${av}
+      <div class="pinfo">
+        <h2>${esc(u.username)}${isBanned?' <span class="badge bc" style="font-size:9px">BANNI</span>':''}</h2>
+        ${bdg(u.role)}
+        ${bioHtml}
+        ${locHtml}
+        ${editBtn}
+        <div class="pstats">
+          <div class="stat"><div class="val">${arts.length}</div><div class="lbl">Articles</div></div>
+          <div class="stat"><div class="val">${u.views||0}</div><div class="lbl">Vues</div></div>
+          <div class="stat"><div class="val">${fmt(u.created)}</div><div class="lbl">Inscrit</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="slabel" style="padding-left:0">Articles de ${esc(u.username)}</div>
+    <div class="grid" style="margin:0 0 24px">${arts.length ? arts.map(cardH).join('') : '<div class="empty">Aucun article.</div>'}</div>
+  `;
+  prevPage = 'users';
+  goTo('profile');
+}
+
+// ══ EDIT PROFILE ══
+let _pendingAvatar = null;
+let _pendingBanner = null;
+
+function openEditModal() {
+  if (!me) return;
+  _pendingAvatar = null;
+  _pendingBanner = null;
+
+  // Avatar preview
+  const avPrev = document.getElementById('av-prev-lg');
+  avPrev.innerHTML = me.avatar ? `<img src="${esc(me.avatar)}" alt="">` : me.username[0].toUpperCase();
+
+  // Banner preview
+  const bWrap = document.getElementById('banner-prev-wrap');
+  const bImg  = document.getElementById('banner-prev-img');
+  if (me.banner) { bImg.src = me.banner; bWrap.style.display='block'; }
+  else { bWrap.style.display='none'; }
+
+  document.getElementById('edit-bio').value = me.bio||'';
+  document.getElementById('edit-loc').value = me.loc||'';
+  document.getElementById('edit-pw').value  = '';
+  document.getElementById('edit-pw2').value = '';
+  document.getElementById('av-file').value  = '';
+  document.getElementById('banner-file').value = '';
+  clrAlert('edit-alert');
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function handleAvatarChange(inp) {
+  const f = inp.files[0]; if (!f) return;
+  resizeImage(f, 300, 300, data => {
+    _pendingAvatar = data;
+    document.getElementById('av-prev-lg').innerHTML = `<img src="${data}" alt="">`;
+  });
+}
+
+function handleBannerChange(inp) {
+  const f = inp.files[0]; if (!f) return;
+  resizeImage(f, 1200, 300, data => {
+    _pendingBanner = data;
+    const bWrap = document.getElementById('banner-prev-wrap');
+    const bImg  = document.getElementById('banner-prev-img');
+    bImg.src = data; bWrap.style.display='block';
+  });
+}
+
+function saveProfile() {
+  if (!me) return;
+  const bio  = sanitize(document.getElementById('edit-bio').value, 200);
+  const loc  = sanitize(document.getElementById('edit-loc').value, 60);
+  const pw   = document.getElementById('edit-pw').value;
+  const pw2  = document.getElementById('edit-pw2').value;
+
+  if (pw) {
+    if (pw.length<6)   { showAlert('edit-alert','Mot de passe trop court (min 6 car.).','err'); return; }
+    if (pw.length>128) { showAlert('edit-alert','Mot de passe trop long.','err'); return; }
+    if (pw!==pw2)      { showAlert('edit-alert','Les mots de passe ne correspondent pas.','err'); return; }
+  }
+
+  const u = users.find(x=>x.username===me.username);
+  if (!u) return;
+
+  u.bio = bio;
+  u.loc = loc;
+  if (pw) u.password = pw;
+  if (_pendingAvatar !== null) u.avatar = _pendingAvatar;
+  if (_pendingBanner !== null) u.banner = _pendingBanner;
+
+  save('users', users);
+  me = u;
+  showAlert('edit-alert','Profil mis à jour !','ok');
+  setTimeout(() => { closeModal('edit-modal'); viewProfile(me.username, true); }, 800);
+}
+
+// ══ MODERATION ══
+function renderMod() {
+  document.getElementById('mc-art').textContent = articles.length + ' article(s)';
+  const ab = document.getElementById('mb-art');
+  ab.innerHTML = articles.length
+    ? articles.map(a=>`<tr>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(a.title)}">${esc(a.title)}</td>
+        <td>${esc(a.author)}</td>
+        <td>${fmt(a.created)}</td>
+        <td><div class="tda">
+          <button class="mb mb-g" onclick="openArticle(${JSON.stringify(a.id)},'mod')">Voir</button>
+          <button class="mb mb-r" onclick="modDelArt(${JSON.stringify(a.id)})">Supprimer</button>
+        </div></td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" style="color:var(--text3);text-align:center;padding:14px">Aucun article</td></tr>';
+
+  document.getElementById('mc-usr').textContent = users.length + ' membre(s)';
+  const ub   = document.getElementById('mb-usr');
+  // Modérateurs ne voient pas les admins ni les autres modérateurs
+  const list = me.role==='admin' ? users : users.filter(u=>!['admin','modérateur'].includes(u.role));
+  ub.innerHTML = list.map(u => {
+    const isBanned = banned.includes(u.username);
+    const banBtn   = isBanned
+      ? `<button class="mb mb-grn" onclick="modUnban(${JSON.stringify(u.username)})">Débannir</button>`
+      : `<button class="mb mb-r" onclick="modBan(${JSON.stringify(u.username)})">Bannir</button>`;
+    const roleBtn = me.role==='admin'
+      ? `<button class="mb mb-gld" onclick="openRoleModal(${JSON.stringify(u.username)})">Rôle</button>`
+      : '';
+    return `<tr>
+      <td><span class="alink" onclick="viewProfile(${JSON.stringify(u.username)})">${esc(u.username)}</span></td>
+      <td>${bdg(u.role)}</td>
+      <td>${isBanned?'<span class="badge bc">Banni</span>':'<span class="badge bm">Actif</span>'}</td>
+      <td>${fmt(u.created)}</td>
+      <td><div class="tda">${roleBtn}${banBtn}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function modDelArt(id) {
+  if (!me || !['modérateur','admin'].includes(me.role)) return;
+  if (!confirm('Supprimer cet article définitivement ?')) return;
+  articles = articles.filter(a=>a.id!==id);
+  save('articles', articles);
+  renderMod();
+}
+
+function modBan(username) {
+  if (!me || !['modérateur','admin'].includes(me.role)) return;
+  if (username==='admin') { alert('Impossible de bannir le compte admin.'); return; }
+  const target = users.find(u=>u.username===username);
+  if (!target) return;
+  if (me.role==='modérateur' && ['modérateur','admin'].includes(target.role)) { alert('Permission refusée.'); return; }
+  if (!confirm('Bannir '+username+' ?')) return;
+  if (!banned.includes(username)) { banned.push(username); save('banned', banned); }
+  if (me && me.username===username) { me=null; goTo('home'); return; }
+  renderMod();
+}
+
+function modUnban(username) {
+  if (!me || !['modérateur','admin'].includes(me.role)) return;
+  if (!confirm('Débannir '+username+' ?')) return;
+  banned = banned.filter(u=>u!==username);
+  save('banned', banned);
+  renderMod();
+}
+
+function openRoleModal(username) {
+  if (!me || me.role!=='admin') return;
+  roleTarget = username;
+  document.getElementById('modal-un').textContent = username;
+  const u = users.find(x=>x.username===username);
+  if (u) document.getElementById('modal-role').value = u.role;
+  document.getElementById('role-modal').classList.add('open');
+}
+
+function applyRole() {
+  if (!roleTarget || !me || me.role!=='admin') return;
+  const role    = document.getElementById('modal-role').value;
+  const allowed = ['membre','contributeur','modérateur','admin'];
+  if (!allowed.includes(role)) return;
+  const u = users.find(x=>x.username===roleTarget);
+  if (u) { u.role=role; save('users',users); }
+  if (me && me.username===roleTarget) me.role=role;
+  closeModal('role-modal');
+  renderMod();
+  buildNav('mod');
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+  if (id==='role-modal') roleTarget=null;
+}
+
+// Click outside to close
+['role-modal','edit-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e){ if(e.target===this) closeModal(id); });
+});
+
+// Keyboard ESC to close
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') ['role-modal','edit-modal'].forEach(id => closeModal(id));
+});
+
+// ══ HELPERS ══
+function bdg(role) {
+  const allowed = {admin:'ba',modérateur:'bmod',contributeur:'bc',membre:'bm'};
+  const r = allowed[role] ? role : 'membre';
+  return `<span class="badge ${allowed[r]}">${r}</span>`;
+}
+
+function fmt(ts) {
+  return new Date(ts).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showAlert(id, msg, type) {
+  const el=document.getElementById(id); if(!el) return;
+  el.innerHTML=`<div class="alert a${type}">${esc(msg)}</div>`;
+}
+
+function clrAlert(id) { const el=document.getElementById(id); if(el) el.innerHTML=''; }
+
+// ══ INIT ══
+document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+goTo('home');
+</script>
+</body>
+</html>
